@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遊戲首頁 V2 - Game Portal</title>
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --panel-bg: #131b2e;
+            --card-bg: #1c263e;
+            --accent-blue: #38bdf8;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(56, 189, 248, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.08), transparent 40%),
+                              radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08), transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+        }
+
+        /* 主容器：左右雙欄結構（對應草圖） */
+        .portal-wrapper {
+            width: 100%;
+            max-width: 1140px;
+            height: 85vh;
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 28px;
+        }
+
+        /* ================= 左側區域 ================= */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+
+        /* 左上：遊戲首頁標題框（對應草圖黃色區塊） */
+        .header-banner {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            padding: 20px 28px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-banner h1 {
+            font-size: 2rem;
+            color: #0f172a;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .status-dot {
+            background: #0f172a;
+            color: #fbbf24;
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* 左下：介紹介面主面板（對應草圖藍色大框） */
+        .info-panel {
+            flex: 1;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 橢圓標籤：介紹介面（對應草圖紅色橢圓） */
+        .badge-pill {
+            align-self: center;
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+            color: #ffffff;
+            padding: 10px 36px;
+            border-radius: 999px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35);
+            margin-bottom: 16px;
+        }
+
+        /* 中間：圖片 + 版本資訊（對應草圖左綠圖 + 右版本） */
+        .media-version-row {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .preview-img-box {
+            width: 100%;
+            height: 140px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid var(--accent-green);
+            background: #0f172a;
+        }
+
+        .preview-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .version-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 14px;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .version-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .version-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent-blue);
+            font-family: monospace;
+        }
+
+        .update-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            padding: 3px 8px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+
+        /* 底部：文字介紹框（對應草圖下方綠色大框） */
+        .desc-box {
+            flex: 1;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .desc-title {
+            font-size: 1.25rem;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .desc-text {
+            font-size: 0.92rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .launch-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.05rem;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+        }
+
+        /* ================= 右側區域：遊戲選項卷軸（對應草圖亮綠色大框） ================= */
+        .scroll-panel {
+            background: var(--panel-bg);
+            border: 2px solid rgba(163, 230, 53, 0.35);
+            border-radius: 28px;
+            padding: 24px 16px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .scroll-header {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #a3e635;
+            letter-spacing: 2px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 16px;
+        }
+
+        /* 自訂卷軸列表 */
+        .game-list-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* 客製化卷軸外觀（對應草圖右側灰色卷軸條） */
+        .game-list-scroll::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .game-list-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+        }
+
+        .game-list-scroll::-webkit-scrollbar-thumb {
+            background: #64748b;
+            border-radius: 10px;
+            border: 2px solid var(--panel-bg);
+        }
+
+        .game-list-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* 單個遊戲選項卡片 */
+        .game-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .game-item:hover {
+            background: #243150;
+            transform: translateX(4px);
+        }
+
+        .game-item.active {
+            border-color: #a3e635;
+            background: rgba(163, 230, 53, 0.1);
+            box-shadow: 0 0 15px rgba(163, 230, 53, 0.15);
+        }
+
+        .game-item img {
+            width: 90px;
+            height: 64px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .item-meta {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .item-ver {
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            font-family: monospace;
+        }
+
+        .item-play-icon {
+            padding: 8px 14px;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .game-item:hover .item-play-icon {
+            background: var(--accent-blue);
+            color: #0f172a;
+        }
+
+        /* 手機版 RWD 響應式 */
+        @media (max-width: 820px) {
+            .portal-wrapper {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .scroll-panel {
+                height: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-wrapper">
+        
+        <!-- 左側欄：標題 + 介紹介面 -->
+        <div class="left-column">
+            <!-- 左上標題 -->
+            <header class="header-banner">
+                <h1>遊戲首頁</h1>
+                <span class="status-dot">V2.0 CLOUD</span>
+            </header>
+
+            <!-- 左下介紹介面 -->
+            <section class="info-panel">
+                <div class="badge-pill">介紹介面</div>
+
+                <!-- 圖片與版本號 -->
+                <div class="media-version-row">
+                    <div class="preview-img-box">
+                        <img id="preview-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyoWhJpzFxovH_9CLuJWNZBuGXFUG6QdUSDzxk7rQXBg&s=10" alt="遊戲預覽圖">
+                    </div>
+                    <div class="version-box">
+                        <span class="version-label">當前版本：</span>
+                        <span class="version-number" id="preview-version">v2.1.0</span>
+                        <span class="update-tag" id="preview-tag">支援 W/A/D</span>
+                    </div>
+                </div>
+
+                <!-- 遊戲詳細介紹與啟動按鈕 -->
+                <div class="desc-box">
+                    <div>
+                        <h2 class="desc-title" id="preview-title">Runinger 2：失落的王國</h2>
+                        <p class="desc-text" id="preview-desc">操控表情包雲朵在懸空平台間跳躍衝刺！支援 W/A/D 自由移動，障礙物無傷阻擋，小心別掉入深淵。</p>
+                    </div>
+                    <a id="preview-link" href="./runinger/index.html" class="launch-btn">▶ 立即進入遊戲</a>
+                </div>
+            </section>
+        </div>
+
+        <!-- 右側欄：遊戲選項卷軸 -->
+        <aside class="scroll-panel">
+            <div class="scroll-header">遊戲選項卷軸</div>
+            <div class="game-list-scroll" id="game-list">
+                <!-- 由 JavaScript 動態渲染遊戲清單 -->
+            </div>
+        </aside>
+
+    </div>
+
+    <script>
+        // 集中管理所有遊戲資料（方便日後擴充，推上 GitHub 即自動更新）
+        const gamesData = [
+            {
+                id: 'runinger2',
+                title: 'Runinger 2：失落的王國',
+                version: 'v2.1.0',
+                tag: '跑酷 / WAD操作',
+                img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyoWhJpzFxovH_9CLuJWNZBuGXFUG6QdUSDzxk7rQXBg&s=10',
+                desc: '操控表情包雲朵在懸空平台間跳躍衝刺！支援 W/A/D 自由移動，障礙物無傷阻擋，小心別掉入深淵。',
+                url: './runinger/index.html'
+            },
+            {
+                id: 'ohio1',
+                title: 'Only in Ohio 1：終焉決戰',
+                version: 'v1.4.2',
+                tag: '生存 / 動作',
+                img: './game2.png',
+                desc: '點擊進入這個震撼的冒險世界，體驗最刺激的 Ohio 終極對決與隱藏關卡。',
+                url: './ohio-game-1/index.html'
+            },
+            {
+                id: 'ohio2',
+                title: 'Only in Ohio 2：藍天冒險',
+                version: 'v2.0.0',
+                tag: 'RPG / 探索',
+                img: 'https://picsum.photos/400/250?random=1',
+                desc: '全新續作登場！探索廣闊天空遺跡，解鎖新角色與強大裝備。',
+                url: './ohio-game-2/index.html'
+            },
+            {
+                id: 'runner_classic',
+                title: '極速跑酷：霓虹衝刺',
+                version: 'v1.0.5',
+                tag: '經典街機',
+                img: 'https://picsum.photos/500/300?random=88',
+                desc: '經典單鍵跳躍無盡跑酷，隨著分數提升速度將越來越快，挑戰你的反應極限！',
+                url: './runner/index.html'
+            }
+        ];
+
+        const gameListEl = document.getElementById('game-list');
+        const previewImg = document.getElementById('preview-img');
+        const previewVersion = document.getElementById('preview-version');
+        const previewTag = document.getElementById('preview-tag');
+        const previewTitle = document.getElementById('preview-title');
+        const previewDesc = document.getElementById('preview-desc');
+        const previewLink = document.getElementById('preview-link');
+
+        // 渲染右側卷軸清單
+        function renderGameList() {
+            gameListEl.innerHTML = '';
+            gamesData.forEach((game, index) => {
+                const item = document.createElement('div');
+                item.className = `game-item ${index === 0 ? 'active' : ''}`;
+                item.innerHTML = `
+                    <img src="${game.img}" alt="${game.title}" loading="lazy" onerror="this.src='https://picsum.photos/400/250?grayscale'">
+                    <div class="item-meta">
+                        <div class="item-title">${game.title}</div>
+                        <div class="item-ver">${game.version} · ${game.tag}</div>
+                    </div>
+                    <a href="${game.url}" class="item-play-icon" onclick="event.stopPropagation()">啟動</a>
+                `;
+
+                // 點擊卡片更新左側介紹介面
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.game-item').forEach(el => el.classList.remove('active'));
+                    item.classList.add('active');
+                    updatePreview(game);
+                });
+
+                gameListEl.appendChild(item);
+            });
+        }
+
+        // 更新左側介紹介面內容
+        function updatePreview(game) {
+            previewImg.src = game.img;
+            previewVersion.textContent = game.version;
+            previewTag.textContent = game.tag;
+            previewTitle.textContent = game.title;
+            previewDesc.textContent = game.desc;
+            previewLink.href = game.url;
+        }
+
+        renderGameList();
+    </script>
+</body>
+</html>
